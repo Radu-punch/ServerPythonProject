@@ -24,8 +24,8 @@ def request_parser(request):
     file_type = path.split('.')[1]
     return method,path,file_type
 
-def give_header(method,file_type):
-    return http_status[method].encode() +'\r\n'.encode()\
+def give_header(code,file_type):
+    return http_status[code].encode() +'\r\n'.encode()\
            + file_types[file_type].encode() + '\r\n\r\n'.encode()
 
 def check_port(port):
@@ -64,7 +64,7 @@ def server_response(request):
 
 
 def MentinanceReDirect():
-    f=open('views\mentenanta.html','rb')
+    f=open('../views/mentenanta.html', 'rb')
     data=f.read()
     response_header = 'HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n'.encode()
     return response_header+data
