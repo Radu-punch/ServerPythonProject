@@ -68,7 +68,9 @@ class ServerTest(IsolatedAsyncioTestCase):
             rasp = await server_response('GET /LinkedFile.html HTTP/1.1'.encode())
             req = 'HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n'.encode()+'''<!DOCTYPE html>\r\n<html lang="en">\r\n<head>\r\n    <meta charset="UTF-8">\r\n    <title>Abobus</title>\r\n</head>\r\n<body>\r\n<h1>second page</h1>\r\n        <p>caz de test pentru serverul meu</p>\r\n\r\n</body>\r\n</html>'''.encode()
         self.assertEqual(rasp,req)
-
+    async def test_conect_server(self):
+        sok = await conect_to_socket(16000)
+        self.assertTrue(sok, True)
 
 
 if __name__ == '__main__':

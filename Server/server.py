@@ -9,14 +9,8 @@ http_status={
     '501': 'HTTP/1.1 501 Not Implemented'
 }
 file_types={
-    'html': 'Content-Type: text/html; charset=utf-8',
-    'jpg': 'Content-Type: image/jpeg',
-    'png': 'Content-Type: image/png',
-    'css': 'Content-Type: text/css',
-    'ico': 'Content-Type: image/x-icon'
+    'html': 'Content-Type: text/html; charset=utf-8', 'jpg': 'Content-Type: image/jpeg','png': 'Content-Type: image/png','css': 'Content-Type: text/css','ico': 'Content-Type: image/x-icon'
 }
-
-
 async def request_parser(request):
         buff=request.decode().split('\r\n')
         method, request, protocol = buff[0].split(' ')
@@ -76,31 +70,45 @@ async def error_501():
                  '''.encode()
     return head + err_m
 
-async def StopServer(client):
-    client.close()
+async def aleg_stare(stare, client, request):
+    match stare:
+        case 1:
+            response = await server_response(request)
+            client.sendall(response)
+        case 3:
+            ras =await MentinanceReDirect()
+            client.sendall(ras)
+            client.shutdown(socket.SHUT_WR)
+        case 2:
+            client.close()
 
+async def conect_to_socket(port):
+    socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    socket_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    socket_server.bind(('localhost', port))
+    socket_server.listen()
+    return socket_server
+
+async def get_stare():
+    stare = int(input("Da stare intre 1-3: "))
+    return stare
+
+async def get_port():
+    port = int(input("da un port intre 1024-65000"))
+    return port
 
 async def run(port,stare):
-
-        socket_server= socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        socket_server.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-        port1= await check_port(port)
-        socket_server.bind(('localhost',port1))
-        socket_server.listen()
-        while True:
-            client , adresa = socket_server.accept()
-            request = client.recv(4096)
-            print(request.decode('utf-8'))
-            print()
-            print(adresa)
-            if stare==1:
-                response = await server_response(request)
-                client.sendall(response)
-            elif stare == 3:
-                ras = await MentinanceReDirect()
-                client.sendall(ras)
-                client.shutdown(socket.SHUT_WR)
-
+    stare = await get_stare()
+    port = await get_port()
+    port =await check_port(port)
+    socket_server = await conect_to_socket(port)
+    while True:
+        client, adresa = socket_server.accept()
+        request = client.recv(4096)
+        print(request.decode('utf-8'))
+        print()
+        print(adresa)
+        await aleg_stare(stare,client,request)
 
 
 if __name__ == '__main__':
