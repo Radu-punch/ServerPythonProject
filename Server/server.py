@@ -11,14 +11,14 @@ http_status={
     '501': 'HTTP/1.1 501 Not Implemented'
 }
 file_types={
-    'html': 'Content-Type: text/html; charset=utf-8', 'jpg': 'Content-Type: image/jpeg','png': 'Content-Type: image/png','css': 'Content-Type: text/css','ico': 'Content-Type: image/x-icon'
+    'html': 'Content-Type: text/html; charset=utf-8', 'jpg': 'Content-Type: image/jpeg','png': 'Content-Type: image/png','css': 'Content-Type: text/css','ico': 'Content-Type: image/x-icon','txt' : 'Content-Type: text/plain'
 }
 
 async def request_parser(request):
         buff=request.decode().split('\r\n')
         method, request, protocol = buff[0].split(' ')
         if request == '/': request = '/index.html'
-        path = re.findall('[/A-Za-z%.]+', request)[0]
+        path = re.findall('[/A-Za-z%0-9.]+', request)[0]
         file_type = path.split('.')
 
         return method, path, file_type[1]
