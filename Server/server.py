@@ -2,6 +2,8 @@ import socket
 import threading
 import re
 import asyncio
+from memory_profiler import profile
+
 http_status={
     '200': 'HTTP/1.1 200 OK',
     '400': 'HTTP/1.1 400 Bad Request',
@@ -11,13 +13,15 @@ http_status={
 file_types={
     'html': 'Content-Type: text/html; charset=utf-8', 'jpg': 'Content-Type: image/jpeg','png': 'Content-Type: image/png','css': 'Content-Type: text/css','ico': 'Content-Type: image/x-icon'
 }
+
 async def request_parser(request):
         buff=request.decode().split('\r\n')
         method, request, protocol = buff[0].split(' ')
         if request == '/': request = '/index.html'
-        path = re.findall('[/A-Za-z.]+', request)[0]
-        file_type = path.split('.')[1]
-        return method, path, file_type
+        path = re.findall('[/A-Za-z%.]+', request)[0]
+        file_type = path.split('.')
+
+        return method, path, file_type[1]
 
 async def give_header(code,file_type):
         return http_status[code].encode() +'\r\n'.encode()\
@@ -51,6 +55,7 @@ async def MentinanceReDirect():
     response_header = 'HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n'.encode()
     f.close()
     return response_header+data
+
 async def error_404():
     header = await give_header('404', 'html')
     err_mes = '''
@@ -60,6 +65,7 @@ async def error_404():
                 </html>
                         '''.encode()
     return header + err_mes
+
 async def error_501():
     head = await give_header('501', 'html')
     err_m = '''
@@ -94,10 +100,10 @@ async def get_stare():
     return stare
 
 async def get_port():
-    port = int(input("da un port intre 1024-65000"))
+    port = int(input("da un port intre 1024-65000 "))
     return port
 
-async def run(port,stare):
+async def run():
     stare = await get_stare()
     port = await get_port()
     port =await check_port(port)
@@ -112,4 +118,4 @@ async def run(port,stare):
 
 
 if __name__ == '__main__':
-    asyncio.run(run(4000,1))
+    asyncio.run(run())
