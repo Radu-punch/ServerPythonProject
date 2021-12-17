@@ -10,7 +10,7 @@ http_status = {
     '501': 'HTTP/1.1 501 Not Implemented'
 }
 file_types = {'html': 'Content-Type: text/html; charset=utf-8', 'jpg': 'Content-Type: image/jpeg',
-              'png': 'Content-Type: image/png', 'css': 'Content-Type: text/css', 'ico': 'Content-Type: image/x-icon'}
+              'png': 'Content-Type: image/png', 'css': 'Content-Type: text/css', 'ico': 'Content-Type: image/x-icon','txt':'Content-Type: text/plain; charset=utf-8'}
 
 
 def request_parser(request):
