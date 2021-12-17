@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QPushButton,QLineEdit,QMessageBox
-from Server.server import *
+from server import *
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -77,6 +77,7 @@ class Ui_Form(object):
         self.pushButton_4.setGeometry(QtCore.QRect(500, 30, 101, 31))
         self.pushButton_4.setStyleSheet("background-color:rgb(0, 255, 0)")
         self.pushButton_4.setObjectName("pushButton_4")
+        self.pushButton_4.clicked.connect(self.button_run_option)
         self.pushButton_5 = QtWidgets.QPushButton(Form)
         self.pushButton_5.setGeometry(QtCore.QRect(500, 80, 101, 31))
         self.pushButton_5.setStyleSheet("background-color:rgb(255, 0, 0)")
@@ -85,7 +86,7 @@ class Ui_Form(object):
         self.pushButton_6.setGeometry(QtCore.QRect(500, 130, 101, 31))
         self.pushButton_6.setStyleSheet("background-color:rgb(0, 0, 255)")
         self.pushButton_6.setObjectName("pushButton_6")
-
+        self.pushButton_6.clicked.connect(self.button_meintenance_otpion)
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -107,12 +108,12 @@ class Ui_Form(object):
         self.pushButton_6.setText(_translate("Form", "Meintenance"))
 
     def button_set_port(self):
-        str=self.lineEdit.text()
-        self.label_4.setText("Server Port:"+" "+str)
+        self.stp=self.lineEdit.text()
+        self.label_4.setText("Server Port:"+" "+self.stp)
         self.label_4.adjustSize()
-        self.label_3.setText("Server Adress: localhost:"+str)
+        self.label_3.setText("Server Adress: localhost:"+self.stp)
         self.label_3.adjustSize()
-        print(str)
+
 
     def button_set_path(self):
         str=self.lineEdit_2.text()
@@ -121,7 +122,7 @@ class Ui_Form(object):
         if str != path:
             msg=QMessageBox()
             msg.setWindowTitle("PATH incorect")
-            msg.setText("Mapa Root cu site-ul e data incorect")
+            msg.setText("path Root cu site-ul e data incorect")
             x=msg.exec_()
         else:
             msg = QMessageBox()
@@ -129,12 +130,35 @@ class Ui_Form(object):
             msg.setText("Path-ul e corect")
             x = msg.exec_()
 
+    def set_conection(self):
+        port = int(self.stp)
+        port = check_port(port)
+        socket_server = conect_to_socket(port)
+
+        client, adresa = socket_server.accept()
+        request = client.recv(4096)
+        print(request.decode('utf-8'))
+        print()
+        print(adresa)
+        return client ,request
+
+    def button_meintenance_otpion(self):
+        while True:
+            client ,request = self.set_conection()
+            ras = MentinanceReDirect()
+            client.sendall(ras)
+            #client.shutdown(socket.SHUT_WR)
+    def button_run_option(self):
+        while True:
+            client , request = self.set_conection()
+            response = server_response(request)
+            client.sendall(response)
 
 if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Form = QtWidgets.QWidget()
-    ui = Ui_Form()
-    ui.setupUi(Form)
-    Form.show()
-    sys.exit(app.exec_())
+     import sys
+     app = QtWidgets.QApplication(sys.argv)
+     Form = QtWidgets.QWidget()
+     ui = Ui_Form()
+     ui.setupUi(Form)
+     Form.show()
+     sys.exit(app.exec_())

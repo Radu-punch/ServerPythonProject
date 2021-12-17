@@ -15,11 +15,12 @@ file_types = {'html': 'Content-Type: text/html; charset=utf-8', 'jpg': 'Content-
 
 def request_parser(request):
     buff = request.decode().split('\r\n')
-    method, request, protocol = buff[0].split()
+    method, request, protocol = buff[0].split(' ')
     if request == '/': request = '/index.html'
-    path = re.findall('[/A-Za-z0-9.]+', request)[0]
-    file_type = path.split('.')[1]
-    return method, path, file_type
+    path = re.findall('[/A-Za-z%0-9.]+', request)[0]
+    file_type = path.split('.')
+
+    return method, path, file_type[1]
 
 
 def give_header(code, file_type):
@@ -109,19 +110,19 @@ def get_port():
     port = int(input("da un port intre 1024-65000"))
     return port
 
-def run():
-    stare = get_stare()
-    port = get_port()
-    port = check_port(port)
-    socket_server = conect_to_socket(port)
-    while True:
-        client, adresa = socket_server.accept()
-        request = client.recv(4096)
-        print(request.decode('utf-8'))
-        print()
-        print(adresa)
-        threading.Thread(target=aleg_stare, args=(stare, client, request)).run()
+# def run():
+#     stare = get_stare()
+#     port = get_port()
+#     port = check_port(port)
+#     socket_server = conect_to_socket(port)
+#     while True:
+#         client, adresa = socket_server.accept()
+#         request = client.recv(4096)
+#         print(request.decode('utf-8'))
+#         print()
+#         print(adresa)
+#         threading.Thread(target=aleg_stare, args=(stare, client, request)).run()
 
 
-if __name__ == '__main__':
-    run()
+# if __name__ == '__main__':
+#     run()
