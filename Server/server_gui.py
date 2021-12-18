@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QPushButton,QLineEdit,QMessageBox
-from server import *
+from Server.server import *
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -109,9 +109,9 @@ class Ui_Form(object):
 
     def button_set_port(self):
         self.stp=self.lineEdit.text()
-        self.label_4.setText("Server Port:"+" "+self.stp)
+        self.label_4.setText("Server Port:"+" "+str(self.stp))
         self.label_4.adjustSize()
-        self.label_3.setText("Server Adress: localhost:"+self.stp)
+        self.label_3.setText("Server Adress: localhost:"+str(self.stp))
         self.label_3.adjustSize()
 
 
@@ -143,12 +143,16 @@ class Ui_Form(object):
             return client ,request
 
     def button_meintenance_otpion(self):
+        self.label_2.setText("Server Status: meintenace")
+        self.label_2.adjustSize()
         while True:
             client ,request = self.set_conection()
             ras = MentinanceReDirect()
             client.sendall(ras)
             #client.shutdown(socket.SHUT_WR)
     def button_run_option(self):
+        self.label_2.setText("Server Status: running")
+        self.label_2.adjustSize()
         while True:
             client , request = self.set_conection()
             response = server_response(request)
