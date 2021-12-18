@@ -134,13 +134,13 @@ class Ui_Form(object):
         port = int(self.stp)
         port = check_port(port)
         socket_server = conect_to_socket(port)
-
-        client, adresa = socket_server.accept()
-        request = client.recv(4096)
-        print(request.decode('utf-8'))
-        print()
-        print(adresa)
-        return client ,request
+        while True:
+            client, adresa = socket_server.accept()
+            request = client.recv(4096)
+            print(request.decode('utf-8'))
+            print()
+            print(adresa)
+            return client ,request
 
     def button_meintenance_otpion(self):
         while True:
