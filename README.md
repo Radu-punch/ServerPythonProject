@@ -8,3 +8,5 @@ a doua problema e testarea socket-ului la orice apelare a testului se primea ca 
 se executa testul. Functia principala run() nu stiu cum sa o testez deoarece ea fiind functia unde apelez pe celelalte in ea.
 2.La varianta server asincron , am coberage de 53% , in mare parte cauzele ca la varianta cu threading.Varianta server syncron crapa mai des , mai putin persistent.
 
+-> GUI am incercat sa fac pe variante asyncrona a programului , insa nu am putut sa fac ca eventloop-ul pyqt5 sa se potriveasca cu eventloop la functii asincrone.
+si am decis sa fac GUI cu varianta simpla a programului ce se afla in al doilea thread.
